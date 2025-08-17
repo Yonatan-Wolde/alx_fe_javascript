@@ -144,15 +144,26 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
-// Server Sync and Conflict Resolution
+// Server Sync and Conflict Resolution with POST
 async function fetchQuotesFromServer() {
   try {
+    // Fetch existing quotes
     const response = await fetch('https://jsonplaceholder.typicode.com/posts');
     const data = await response.json();
     serverQuotes = data.slice(0, 5).map(post => ({ text: post.title, category: 'Server' }));
+
+    // Send local quotes to server (simulated POST)
+    await fetch('https://jsonplaceholder.typicode.com/posts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(quotes)
+    });
+
     resolveConflicts();
   } catch (err) {
-    console.error('Error fetching server quotes:', err);
+    console.error('Error syncing with server:', err);
   }
 }
 
