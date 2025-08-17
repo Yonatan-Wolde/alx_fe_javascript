@@ -147,12 +147,10 @@ function importFromJsonFile(event) {
 // Server Sync and Conflict Resolution with POST
 async function fetchQuotesFromServer() {
   try {
-    // Fetch existing quotes
     const response = await fetch('https://jsonplaceholder.typicode.com/posts');
     const data = await response.json();
     serverQuotes = data.slice(0, 5).map(post => ({ text: post.title, category: 'Server' }));
 
-    // Send local quotes to server (simulated POST)
     await fetch('https://jsonplaceholder.typicode.com/posts', {
       method: 'POST',
       headers: {
@@ -187,15 +185,19 @@ function resolveConflicts() {
     });
     conflictResolutionDiv.style.display = 'block';
   } else {
-    const serverTextSet = new Set(serverQuotes.map(q => q.text));
-    quotes = quotes.filter(q => !serverTextSet.has(q.text));
-    quotes.push(...serverQuotes);
-    saveQuotes();
-    populateCategories();
-    syncNotification.textContent = 'Quotes synchronized with server.';
-    syncNotification.style.display = 'block';
-    setTimeout(() => { syncNotification.style.display = 'none'; }, 3000);
+    syncQuotes();
   }
+}
+
+function syncQuotes() {
+  const serverTextSet = new Set(serverQuotes.map(q => q.text));
+  quotes = quotes.filter(q => !serverTextSet.has(q.text));
+  quotes.push(...serverQuotes);
+  saveQuotes();
+  populateCategories();
+  syncNotification.textContent = 'Quotes synchronized with server.';
+  syncNotification.style.display = 'block';
+  setTimeout(() => { syncNotification.style.display = 'none'; }, 3000);
 }
 
 setInterval(fetchQuotesFromServer, 60000);
