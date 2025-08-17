@@ -1,0 +1,36 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  line-height: 1.6;
+}
+
+#quoteDisplay {
+  margin-bottom: 1em;
+  font-style: italic;
+  font-size: 1.2em;
+  padding: 10px;
+  border-left: 4px solid #555;
+}
+
+button {
+  margin: 5px 0;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007BFF;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.form-container {
+  margin-top: 2em;
+}
+
+input[type="text"] {
+  padding: 6px;
+  margin-right: 5px;
+}
