@@ -46,7 +46,6 @@ function populateCategories() {
 
 function showRandomQuote() {
   quoteDisplay.innerHTML = "";
-
   let filteredQuotes = quotes;
   const selectedCategory = categoryFilter.value;
   if (selectedCategory !== "all") {
@@ -98,14 +97,12 @@ function createAddQuoteForm() {
   formContainer.appendChild(addButton);
 
   addQuoteFormContainer.appendChild(formContainer);
-
   addButton.addEventListener("click", addQuote);
 }
 
 function addQuote() {
   const textInput = document.getElementById("newQuoteText");
   const categoryInput = document.getElementById("newQuoteCategory");
-
   const text = textInput.value.trim();
   const category = categoryInput.value.trim();
 
