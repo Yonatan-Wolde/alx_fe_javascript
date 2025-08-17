@@ -9,6 +9,8 @@ const exportBtn = document.getElementById("exportQuotes");
 const importFileInput = document.getElementById("importFile");
 const categoryFilter = document.getElementById("categoryFilter");
 const syncNotification = document.getElementById("syncNotification");
+const conflictResolutionDiv = document.getElementById("conflictResolution");
+const conflictListDiv = document.getElementById("conflictList");
 
 function loadQuotes() {
   const storedQuotes = localStorage.getItem("quotes");
@@ -148,11 +150,9 @@ function importFromJsonFile(event) {
 
 // Simulated server sync
 async function fetchServerQuotes() {
-  // Simulate server call using fetch (replace with real API endpoint)
   try {
     const response = await fetch('https://jsonplaceholder.typicode.com/posts');
     const data = await response.json();
-    // Map server data to quote format for demo purposes
     serverQuotes = data.slice(0, 5).map(post => ({ text: post.title, category: 'Server' }));
     resolveConflicts();
   } catch (err) {
@@ -161,17 +161,36 @@ async function fetchServerQuotes() {
 }
 
 function resolveConflicts() {
-  const serverTextSet = new Set(serverQuotes.map(q => q.text));
-  quotes = quotes.filter(q => !serverTextSet.has(q.text));
-  quotes.push(...serverQuotes);
-  saveQuotes();
-  populateCategories();
-  syncNotification.textContent = 'Quotes synchronized with server.';
-  syncNotification.style.display = 'block';
-  setTimeout(() => { syncNotification.style.display = 'none'; }, 3000);
+  const conflicts = serverQuotes.filter(sq => quotes.some(lq => lq.text === sq.text && lq.category !== sq.category));
+  if (conflicts.length > 0) {
+    conflictListDiv.innerHTML = '';
+    conflicts.forEach(conflict => {
+      const div = document.createElement('div');
+      div.textContent = `Local: ${quotes.find(q => q.text === conflict.text).category}, Server: ${conflict.category}`;
+      const keepServerBtn = document.createElement('button');
+      keepServerBtn.textContent = 'Keep Server';
+      keepServerBtn.addEventListener('click', () => {
+        quotes = quotes.map(q => q.text === conflict.text ? conflict : q);
+        saveQuotes();
+        populateCategories();
+        conflictResolutionDiv.style.display = 'none';
+      });
+      div.appendChild(keepServerBtn);
+      conflictListDiv.appendChild(div);
+    });
+    conflictResolutionDiv.style.display = 'block';
+  } else {
+    const serverTextSet = new Set(serverQuotes.map(q => q.text));
+    quotes = quotes.filter(q => !serverTextSet.has(q.text));
+    quotes.push(...serverQuotes);
+    saveQuotes();
+    populateCategories();
+    syncNotification.textContent = 'Quotes synchronized with server.';
+    syncNotification.style.display = 'block';
+    setTimeout(() => { syncNotification.style.display = 'none'; }, 3000);
+  }
 }
 
-// Periodic sync every 60 seconds
 setInterval(fetchServerQuotes, 60000);
 
 newQuoteBtn.addEventListener("click", showRandomQuote);

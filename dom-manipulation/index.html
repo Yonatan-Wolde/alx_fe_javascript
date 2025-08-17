@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Dynamic Quote Generator</h1>
+    <h1>Dynamic Quote Generator</h1>
 
   <!-- Category Filter -->
   <label for="categoryFilter">Filter by Category:</label>
@@ -30,6 +30,13 @@
 
   <!-- Server Sync Notification -->
   <div id="syncNotification" style="display:none; color: green; margin-top: 10px;"></div>
+
+  <!-- Manual Conflict Resolution -->
+  <div id="conflictResolution" style="display:none; border:1px solid red; padding:10px; margin-top:10px;">
+    <h3>Conflict Detected!</h3>
+    <p>Some server quotes conflict with your local quotes. Choose which ones to keep:</p>
+    <div id="conflictList"></div>
+  </div>
 
   <script src="script.js"></script>
   
