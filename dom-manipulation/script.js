@@ -195,7 +195,7 @@ function syncQuotes() {
   quotes.push(...serverQuotes);
   saveQuotes();
   populateCategories();
-  syncNotification.textContent = 'Quotes synchronized with server.';
+  syncNotification.textContent = 'Quotes synced with server!';
   syncNotification.style.display = 'block';
   setTimeout(() => { syncNotification.style.display = 'none'; }, 3000);
 }
