@@ -1,4 +1,6 @@
+// script.js
 let quotes = [];
+let serverQuotes = [];
 
 const quoteDisplay = document.getElementById("quoteDisplay");
 const newQuoteBtn = document.getElementById("newQuote");
@@ -6,6 +8,7 @@ const addQuoteFormContainer = document.getElementById("addQuoteFormContainer");
 const exportBtn = document.getElementById("exportQuotes");
 const importFileInput = document.getElementById("importFile");
 const categoryFilter = document.getElementById("categoryFilter");
+const syncNotification = document.getElementById("syncNotification");
 
 function loadQuotes() {
   const storedQuotes = localStorage.getItem("quotes");
@@ -143,6 +146,34 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
+// Simulated server sync
+async function fetchServerQuotes() {
+  // Simulate server call using fetch (replace with real API endpoint)
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    const data = await response.json();
+    // Map server data to quote format for demo purposes
+    serverQuotes = data.slice(0, 5).map(post => ({ text: post.title, category: 'Server' }));
+    resolveConflicts();
+  } catch (err) {
+    console.error('Error fetching server quotes:', err);
+  }
+}
+
+function resolveConflicts() {
+  const serverTextSet = new Set(serverQuotes.map(q => q.text));
+  quotes = quotes.filter(q => !serverTextSet.has(q.text));
+  quotes.push(...serverQuotes);
+  saveQuotes();
+  populateCategories();
+  syncNotification.textContent = 'Quotes synchronized with server.';
+  syncNotification.style.display = 'block';
+  setTimeout(() => { syncNotification.style.display = 'none'; }, 3000);
+}
+
+// Periodic sync every 60 seconds
+setInterval(fetchServerQuotes, 60000);
+
 newQuoteBtn.addEventListener("click", showRandomQuote);
 exportBtn.addEventListener("click", exportQuotesToJson);
 importFileInput.addEventListener("change", importFromJsonFile);
@@ -152,3 +183,4 @@ loadQuotes();
 populateCategories();
 createAddQuoteForm();
 showRandomQuote();
+fetchServerQuotes();
