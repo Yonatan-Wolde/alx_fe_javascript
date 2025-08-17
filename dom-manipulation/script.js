@@ -1,4 +1,3 @@
-// script.js
 let quotes = [];
 let serverQuotes = [];
 
@@ -148,8 +147,8 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
-// Simulated server sync
-async function fetchServerQuotes() {
+// Server Sync and Conflict Resolution
+async function fetchQuotesFromServer() {
   try {
     const response = await fetch('https://jsonplaceholder.typicode.com/posts');
     const data = await response.json();
@@ -191,7 +190,7 @@ function resolveConflicts() {
   }
 }
 
-setInterval(fetchServerQuotes, 60000);
+setInterval(fetchQuotesFromServer, 60000);
 
 newQuoteBtn.addEventListener("click", showRandomQuote);
 exportBtn.addEventListener("click", exportQuotesToJson);
@@ -202,4 +201,4 @@ loadQuotes();
 populateCategories();
 createAddQuoteForm();
 showRandomQuote();
-fetchServerQuotes();
+fetchQuotesFromServer();
