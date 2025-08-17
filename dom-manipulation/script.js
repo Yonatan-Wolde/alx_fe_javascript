@@ -12,12 +12,27 @@ const addQuoteBtn = document.getElementById("addQuote");
 // Function to show a random quote
 function showRandomQuote() {
   if (quotes.length === 0) {
-    quoteDisplay.textContent = "No quotes available.";
+    quoteDisplay.textContent = "No quotes available. Add one!";
     return;
   }
+
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const quote = quotes[randomIndex];
-  quoteDisplay.textContent = `"${quote.text}" — [${quote.category}]`;
+
+  // Clear previous content
+  quoteDisplay.textContent = "";
+
+  // Create elements
+  const quoteText = document.createElement("p");
+  quoteText.textContent = `"${quote.text}"`;
+
+  const categorySpan = document.createElement("span");
+  categorySpan.textContent = ` [${quote.category}]`;
+  categorySpan.style.fontWeight = "bold";
+
+  // Append to display
+  quoteText.appendChild(categorySpan);
+  quoteDisplay.appendChild(quoteText);
 }
 
 // Function to add a new quote
@@ -28,19 +43,18 @@ function addQuote() {
   const text = textInput.value.trim();
   const category = categoryInput.value.trim();
 
-  if (text === "" || category === "") {
+  if (text && category) {
+    // Add new quote object to the array
+    quotes.push({ text, category });
+
+    // Clear input fields
+    textInput.value = "";
+    categoryInput.value = "";
+
+    alert("New quote added successfully!");
+  } else {
     alert("Please enter both a quote and a category.");
-    return;
   }
-
-  // Add new quote object to the array
-  quotes.push({ text, category });
-
-  // Clear input fields
-  textInput.value = "";
-  categoryInput.value = "";
-
-  alert("New quote added successfully!");
 }
 
 // Attach event listeners
